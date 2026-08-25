@@ -4,6 +4,9 @@ class Metadata:
         self.cond = cond
         self.value = value
 
+# reflechir a enlever la classe Metadata pour mettre tout de suite
+# les metadonnees dans les classes memes.
+
 
 class Hub:
 
