@@ -24,7 +24,7 @@ class Hub:
         self.color = color
         self.max_drones = max_drones
 
-class Start_Hub(Hub):
+class StartHub(Hub):
     def __init__(self,
                  name: str,
                  x: int,
@@ -32,9 +32,9 @@ class Start_Hub(Hub):
                  zone: Zone = Zone.normal,
                  color: str | None = None,
                  max_drones: int = 1) -> None:
-        super().__init__(self, name, 0, 0, zone, color, max_drones)
+        super().__init__(name, 0, 0, zone, color, max_drones)
 
-class End_Hub(Hub):
+class EndHub(Hub):
     def __init__(self,
                  name: str,
                  x: int,
@@ -42,7 +42,7 @@ class End_Hub(Hub):
                  zone: Zone = Zone.normal,
                  color: str | None = None,
                  max_drones: int = 1) -> None:
-        super().__init__(self, x, y, zone, color, max_drones)
+        super().__init__(name, x, y, zone, color, max_drones)
 
 
 class Connection:
@@ -73,6 +73,6 @@ class Drones:
         self.in_hub = in_hub
 
     def is_arrived(self) -> bool: # si le hub est un End_Hub, arrived = True
-        if isinstance(self.hub, End_Hub):
+        if isinstance(self.hub, EndHub):
             self.arrived = True
         return self.arrived
