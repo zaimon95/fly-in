@@ -73,4 +73,6 @@ class Drones:
         self.in_hub = in_hub
 
     def is_arrived(self) -> bool: # si le hub est un End_Hub, arrived = True
-        pass
+        if isinstance(self.hub, End_Hub):
+            self.arrived = True
+        return self.arrived
