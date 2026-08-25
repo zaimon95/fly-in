@@ -1,5 +1,3 @@
-# Makefile — A-Maze-ing
-
 PYTHON = python3
 MAIN   = fly_in.py
 
@@ -21,7 +19,7 @@ clean:
 	rm -rf dist/ build/ *.egg-info/
 
 lint:
-	flake8 .flake8
+	flake8 .
 	mypy . \
 		--warn-return-any \
 		--warn-unused-ignores \
