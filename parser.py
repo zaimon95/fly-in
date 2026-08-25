@@ -1,28 +1,39 @@
-class Metadata:
+from enum import Enum
 
-    def __init__(self, cond: str, value: str | int) -> None:
-        self.cond = cond
-        self.value = value
 
-# reflechir a enlever la classe Metadata pour mettre tout de suite
-# les metadonnees dans les classes memes.
+class Zone(Enum):
+    normal = 1
+    blocked = 2
+    restricted = 3
+    priority = 4
 
 
 class Hub:
 
-    def __init__(self, name: str, x: int, y: int, meta: Metadata) -> None:
+    def __init__(self,
+                 name: str,
+                 x: int,
+                 y: int,
+                 zone: Zone = Zone.normal,
+                 color: str | None = None,
+                 max_drones: int = 1) -> None:
         self.name = name
         self.x = x
         self.y = y
-        self.meta = meta
+        self.zone = zone
+        self.color = color
+        self.max_drones = max_drones
 
 
 class Connection:
 
-    def __init__(self, hub1: str, hub2: str, meta: Metadata) -> None:
+    def __init__(self,
+                 hub1: str,
+                 hub2: str,
+                 max_link_capacity: int = 1) -> None:
         self.hub1 = hub1
         self.hub2 = hub2
-        self.meta = meta
+        self.max_link_capacity = max_link_capacity
 
 
 class Drones:
@@ -31,10 +42,10 @@ class Drones:
                  name: str,
                  x: int,
                  y: int,
-                 arrived: bool,
-                 inHub: bool) -> None:
+                 arrived: bool = False,
+                 in_hub: bool = True) -> None:
         self.name = name
         self.x = x
         self.y = y
-        self.arrived = False
-        self.inHub = True
+        self.arrived = arrived
+        self.in_hub = in_hub
