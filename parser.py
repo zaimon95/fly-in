@@ -24,15 +24,23 @@ class Hub:
         self.color = color
         self.max_drones = max_drones
 
+    def costs(self) -> int:
+        if self.zone == Zone.blocked:
+            return 0
+        elif self.zone == Zone.restricted:
+            return 2
+        return 1
+
+
 class StartHub(Hub):
     def __init__(self,
                  name: str,
-                 x: int,
-                 y: int,
                  zone: Zone = Zone.normal,
                  color: str | None = None,
-                 max_drones: int = 1) -> None:
+                 max_drones: int = 5) -> None:
+        # faire un split sur le fichier de map pour avoir le nombre de drones
         super().__init__(name, 0, 0, zone, color, max_drones)
+
 
 class EndHub(Hub):
     def __init__(self,
@@ -41,7 +49,8 @@ class EndHub(Hub):
                  y: int,
                  zone: Zone = Zone.normal,
                  color: str | None = None,
-                 max_drones: int = 1) -> None:
+                 max_drones: int = 5) -> None:
+        # faire un split sur le fichier de map pour avoir le nombre de drones
         super().__init__(name, x, y, zone, color, max_drones)
 
 
@@ -72,7 +81,6 @@ class Drones:
         self.arrived = arrived
         self.in_hub = in_hub
 
-    def is_arrived(self) -> bool: # si le hub est un End_Hub, arrived = True
+    def is_arrived(self) -> None:
         if isinstance(self.hub, EndHub):
             self.arrived = True
-        return self.arrived
