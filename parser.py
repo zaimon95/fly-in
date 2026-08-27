@@ -78,9 +78,9 @@ class Drones:
         self.x = x
         self.y = y
         self.hub = hub
-        self.arrived = arrived
+        self._arrived = arrived
         self.in_hub = in_hub
 
     def is_arrived(self) -> None:
         if isinstance(self.hub, EndHub):
-            self.arrived = True
+            self._arrived = True
