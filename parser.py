@@ -35,11 +35,13 @@ class Hub:
 class StartHub(Hub):
     def __init__(self,
                  name: str,
+                 x: int,
+                 y: int,
                  zone: Zone = Zone.normal,
                  color: str | None = None,
                  max_drones: int = 5) -> None:
         # faire un split sur le fichier de map pour avoir le nombre de drones
-        super().__init__(name, 0, 0, zone, color, max_drones)
+        super().__init__(name, x, y, zone, color, max_drones)
 
 
 class EndHub(Hub):
@@ -84,3 +86,4 @@ class Drones:
     def is_arrived(self) -> None:
         if isinstance(self.hub, EndHub):
             self._arrived = True
+
