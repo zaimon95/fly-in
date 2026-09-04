@@ -95,51 +95,39 @@ class Drones:
 
 def parse_hub() -> list[Hub]:
     hubs: list[Hub] = []
+    nb_drones: int = 1
     with open("maps/easy/01_linear_path.txt", "r") as f:
         file = f.readlines()
     for line in file:
         clean_line = line.strip()
-        var = re.match(
-            r"(\w+): (\w+) (\d+) " + r"(\d+)(?: \[(.+)])?", clean_line
+        nb_drones_var = re.match(r"(\w+): (\d)", clean_line)
+        if nb_drones_var:
+            groups_drone = nb_drones_var.groups()
+            if groups_drone[0] == "nb_drones":
+                nb_drones = int(groups_drone[1])
+        hub_var = re.match(
+            r"(\w+): (\w+) (\d+) (\d+)(?: \[(.+)])?", clean_line
         )
-        if var:
-            groups = var.groups()
+        if hub_var:
+            groups = hub_var.groups()
             match groups[0]:
-                case "nb_drones":
-                    nb_drones = int(groups[1])
-                    print(nb_drones)
                 case "start_hub":
                     name_sh = groups[1]
                     x_sh = int(groups[2])
                     y_sh = int(groups[3])
                     color_sh = None
                     zone_sh = Zone["normal".upper()]
-                    max_drones_sh = 1
-                    if len(groups) == 5:
-                        try:
-                            if groups[4].split("=")[0] == "color":
-                                color_sh = (
-                                    groups[4].split(" ")[0].split("=")[1]
-                                )
-                        except IndexError:
-                            color_sh = None
-                        try:
-                            if groups[4].split("=")[0] == "zone":
-                                zone_sh = Zone[
-                                    groups[4]
-                                    .split(" ")[1]
-                                    .split("=")[1]
-                                    .upper()
-                                ]
-                        except IndexError:
-                            zone_sh = Zone["normal".upper()]
-                        try:
-                            if groups[4].split("=")[0] == "max_drones":
-                                max_drones_sh = int(
-                                    groups[4].split(" ")[2].split("=")[1]
-                                )
-                        except IndexError:
-                            max_drones_sh = 1
+                    max_drones_sh = nb_drones
+                    options = groups[4]
+                    if options is not None:
+                        for md in options.split(" "):
+                            key, _, value = md.partition("=")
+                            if key == "color":
+                                color_sh = value
+                            elif key == "zone":
+                                zone_sh = Zone[value.upper()]
+                            elif key == "max_drones":
+                                max_drones_sh = int(value)
                     start_hub = StartHub(
                         name_sh, x_sh, y_sh, zone_sh, color_sh, max_drones_sh
                     )
@@ -151,29 +139,16 @@ def parse_hub() -> list[Hub]:
                     color_h = None
                     zone_h = Zone["normal".upper()]
                     max_drones_h = 1
-                    if len(groups) == 5:
-                        try:
-                            if groups[4].split("=")[0] == "color":
-                                color_h = groups[4].split(" ")[0].split("=")[1]
-                        except IndexError:
-                            color_h = None
-                        try:
-                            if groups[4].split("=")[0] == "zone":
-                                zone_h = Zone[
-                                    groups[4]
-                                    .split(" ")[1]
-                                    .split("=")[1]
-                                    .upper()
-                                ]
-                        except IndexError:
-                            zone_h = Zone["normal".upper()]
-                        try:
-                            if groups[4].split("=")[0] == "max_drones":
-                                max_drones_h = int(
-                                    groups[4].split(" ")[2].split("=")[1]
-                                )
-                        except IndexError:
-                            max_drones_h = 1
+                    options = groups[4]
+                    if options is not None:
+                        for md in options.split(" "):
+                            key, _, value = md.partition("=")
+                            if key == "color":
+                                color_h = value
+                            elif key == "zone":
+                                zone_h = Zone[value.upper()]
+                            elif key == "max_drones":
+                                max_drones_h = int(value)
                     hub = Hub(name_h, x_h, y_h, zone_h, color_h, max_drones_h)
                     hubs.append(hub)
                 case "end_hub":
@@ -182,32 +157,17 @@ def parse_hub() -> list[Hub]:
                     y_eh = int(groups[3])
                     color_eh = None
                     zone_eh = Zone["normal".upper()]
-                    max_drones_eh = 1
-                    if len(groups) == 5:
-                        try:
-                            if groups[4].split("=")[0] == "color":
-                                color_eh = (
-                                    groups[4].split(" ")[0].split("=")[1]
-                                )
-                        except IndexError:
-                            color_eh = None
-                        try:
-                            if groups[4].split("=")[0] == "zone":
-                                zone_eh = Zone[
-                                    groups[4]
-                                    .split(" ")[1]
-                                    .split("=")[1]
-                                    .upper()
-                                ]
-                        except IndexError:
-                            zone_eh = Zone["normal".upper()]
-                        try:
-                            if groups[4].split("=")[0] == "max_drones":
-                                max_drones_eh = int(
-                                    groups[4].split(" ")[2].split("=")[1]
-                                )
-                        except IndexError:
-                            max_drones_eh = 1
+                    max_drones_eh = nb_drones
+                    options = groups[4]
+                    if options is not None:
+                        for md in options.split(" "):
+                            key, _, value = md.partition("=")
+                            if key == "color":
+                                color_eh = value
+                            elif key == "zone":
+                                zone_eh = Zone[value.upper()]
+                            elif key == "max_drones":
+                                max_drones_eh = int(value)
                     end_hub = EndHub(
                         name_eh, x_eh, y_eh, zone_eh, color_eh, max_drones_eh
                     )
@@ -215,5 +175,38 @@ def parse_hub() -> list[Hub]:
     return hubs
 
 
+def parse_connection() -> list[Connection]:
+    connections: list[Connection] = []
+    with open("maps/easy/01_linear_path.txt", "r") as f:
+        file = f.readlines()
+    for line in file:
+        clean_line = line.strip()
+        var = re.match(r"(\w+): (\w+)-(\w+)(\[(.+)])?", clean_line)
+        if var:
+            groups = var.groups()
+            try:
+                if groups[0] == "connection":
+                    hub1 = groups[1]
+                    # verifier que le nom
+                    # représente bien un hub existant
+                    hub2 = groups[2]
+                    # verifier que le nom
+                    # représente bien un hub existant
+                    max_link_capacity = 1
+                    options = groups[4]
+                    if options is not None:
+                        for md in options.split(" "):
+                            if md.startswith("max_link_capacity="):
+                                max_link_capacity = int(
+                                    md.split("=")[1]
+                                )
+                    connection = Connection(hub1, hub2, max_link_capacity)
+                    connections.append(connection)
+            except Exception as e:
+                print(e)
+    return connections
+
+
 if __name__ == "__main__":
-    print(parse_hub())
+    parse_hub()
+    parse_connection()
