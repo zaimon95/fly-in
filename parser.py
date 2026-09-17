@@ -273,8 +273,6 @@ def _parse_hub_line(line: str, line_no: int) -> Hub:
     if hub_class is Hub:
         return Hub(name, int(x_str), int(y_str), zone, color,
                    max_drones if max_drones is not None else 1)
-    # max_drones is meaningless on start_hub/end_hub: silently ignored,
-    # as required by the subject (not a validation error)
     return hub_class(name, int(x_str), int(y_str), zone, color)
 
 
