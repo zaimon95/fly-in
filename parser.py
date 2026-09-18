@@ -127,10 +127,8 @@ class Graph:
         self._end: EndHub | None = None
 
     def validate(self) -> None:
-        if self._start is None:
-            raise MapParseError("map defines no start_hub zone")
-        if self._end is None:
-            raise MapParseError("map defines no end_hub zone")
+        _ = self.start
+        _ = self.end
 
     @property
     def start(self) -> StartHub:
