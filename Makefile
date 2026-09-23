@@ -1,5 +1,5 @@
 PYTHON = python3
-MAIN   = fly_in.py
+MAIN   = fly-in.py
 
 .PHONY: install run debug lint lint-strict clean
 

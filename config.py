@@ -1,8 +1,3 @@
-"""Loading of config.txt: a small "key: value" settings file."""
-
-from __future__ import annotations
-
-
 class ConfigError(ValueError):
     pass
 
@@ -23,8 +18,7 @@ class Config:
                 key, sep, value = line.partition(":")
                 if not sep:
                     raise ConfigError(
-                        f"line {line_no}: expected 'key: value', "
-                        f"got {line!r}"
+                        f"line {line_no}: expected 'key: value', got {line!r}"
                     )
                 values[key.strip()] = value.strip()
 
@@ -36,13 +30,10 @@ class Config:
         try:
             max_paths = int(values["max_paths"])
         except KeyError:
-            raise ConfigError(
-                "config.txt is missing 'max_paths'"
-            ) from None
+            raise ConfigError("config.txt is missing 'max_paths'") from None
         except ValueError:
             raise ConfigError(
-                f"max_paths must be an integer, "
-                f"got {values['max_paths']!r}"
+                f"max_paths must be an integer, got {values['max_paths']!r}"
             ) from None
         if max_paths <= 0:
             raise ConfigError("max_paths must be a positive integer")

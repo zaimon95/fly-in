@@ -2,4 +2,4 @@
 # One "key: value" pair per line, comments start with '#'
 
 map_path: maps/easy/01_linear_path.txt
-max_paths: 5
+max_paths: 2
