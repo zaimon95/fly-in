@@ -1,5 +1,7 @@
 # Fly-in configuration file
 # One "key: value" pair per line, comments start with '#'
 
-map_path: maps/easy/01_linear_path.txt
-max_paths: 2
+map_path: maps/hard/03_ultimate_challenge.txt
+
+# Open the pygame replay window after the simulation (true or false)
+visual: true

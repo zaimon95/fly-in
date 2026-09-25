@@ -1,4 +1,4 @@
-from __future__ import annotations
+"""Parsing of Fly-in map files into a Graph."""
 
 import re
 
@@ -6,6 +6,8 @@ from data import EndHub, Graph, Hub, MapParseError, StartHub, Zone
 
 
 class MapParser:
+    """Reads a map file and builds the corresponding Graph."""
+
     _NB_DRONES_RE = re.compile(r"nb_drones: (\d+)$")
     _HUB_RE = re.compile(r"(\w+): (\w+) (-?\d+) (-?\d+)(?: \[(.+)])?$")
     _CONNECTION_RE = re.compile(r"connection: (\w+)-(\w+)(?: \[(.+)])?$")
@@ -20,6 +22,19 @@ class MapParser:
     _CONNECTION_METADATA_KEYS = {"max_link_capacity"}
 
     def parse_map(self, path: str) -> Graph:
+        """Parse a map file.
+
+        Args:
+            path: Path to the map file.
+
+        Returns:
+            The graph described by the file.
+
+        Raises:
+            OSError: If the file cannot be read.
+            MapParseError: If the file is invalid. The message gives
+                the line number and the cause.
+        """
         with open(path, "r") as f:
             lines = f.readlines()
 
@@ -70,6 +85,19 @@ class MapParser:
 
     @staticmethod
     def _positive_int(value: str, what: str, line_no: int) -> int:
+        """Convert a string to a strictly positive integer.
+
+        Args:
+            value: The text to convert.
+            what: Name of the field, used in the error message.
+            line_no: Line number, used in the error message.
+
+        Returns:
+            The parsed integer.
+
+        Raises:
+            MapParseError: If value is not an integer, or not positive.
+        """
         try:
             parsed = int(value)
         except ValueError:
@@ -86,6 +114,20 @@ class MapParser:
     def _parse_zone_options(
         self, options: str | None, line_no: int
     ) -> tuple[str | None, Zone, int | None]:
+        """Parse the metadata block of a hub line.
+
+        Args:
+            options: Content between the brackets, or None if absent.
+            line_no: Line number, used in error messages.
+
+        Returns:
+            A (color, zone, max_drones) tuple. max_drones is None when
+            not specified.
+
+        Raises:
+            MapParseError: On an unknown key, an invalid zone type or a
+                non-positive capacity.
+        """
         color: str | None = None
         zone = Zone.NORMAL
         max_drones: int | None = None
@@ -115,6 +157,18 @@ class MapParser:
     def _parse_connection_options(
         self, options: str | None, line_no: int
     ) -> int:
+        """Parse the metadata block of a connection line.
+
+        Args:
+            options: Content between the brackets, or None if absent.
+            line_no: Line number, used in error messages.
+
+        Returns:
+            The link capacity, 1 by default.
+
+        Raises:
+            MapParseError: On an unknown key or a non-positive capacity.
+        """
         if options is None:
             return 1
         capacity = 1
@@ -131,6 +185,18 @@ class MapParser:
         return capacity
 
     def _parse_hub_line(self, line: str, line_no: int) -> Hub:
+        """Build a Hub, StartHub or EndHub from a hub line.
+
+        Args:
+            line: The stripped line.
+            line_no: Line number, used in error messages.
+
+        Returns:
+            The hub instance, of the class matching the line prefix.
+
+        Raises:
+            MapParseError: If the line or its metadata is invalid.
+        """
         match = self._HUB_RE.match(line)
         if match is None:
             raise MapParseError(
