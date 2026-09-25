@@ -68,7 +68,8 @@ class MapParser:
         graph.validate()
         return graph
 
-    def _positive_int(self, value: str, what: str, line_no: int) -> int:
+    @staticmethod
+    def _positive_int(value: str, what: str, line_no: int) -> int:
         try:
             parsed = int(value)
         except ValueError:
