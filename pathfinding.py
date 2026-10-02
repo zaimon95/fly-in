@@ -51,8 +51,10 @@ class Edge:
 
     def __repr__(self) -> str:
         """Return a debug representation of the edge."""
-        return (f"Edge(-> {self.target}, cap={self.capacity}, "
-                f"w={self.weight}, flow={self.flow})")
+        return (
+            f"Edge(-> {self.target}, cap={self.capacity}, "
+            f"w={self.weight}, flow={self.flow})"
+        )
 
 
 class BfsNetwork:
@@ -117,7 +119,7 @@ class BfsNetwork:
         for hub in self._graph.hubs():
             if hub.zone is Zone.BLOCKED:
                 continue
-            for neighbour, connection in self._graph.neighbors(hub):
+            for neighbour, connection in self._graph.neighbours(hub):
                 if neighbour.zone is Zone.BLOCKED:
                     continue
                 pair = connection.endpoints()
@@ -155,12 +157,12 @@ class BfsNetwork:
     @property
     def source(self) -> NodeId:
         """Node where all flow starts: the start hub's "out" node."""
-        return "out", self._graph.start.name
+        return ("out", self._graph.start.name)
 
     @property
     def sink(self) -> NodeId:
         """Node where all flow ends: the end hub's "in" node."""
-        return "in", self._graph.end.name
+        return ("in", self._graph.end.name)
 
     def shortest_path(self) -> list[Edge] | None:
         """Find the shortest augmenting path in the residual network.
@@ -213,11 +215,14 @@ class BfsNetwork:
     def _best_priority_path(
         self, dist: dict[NodeId, int], order: list[NodeId]
     ) -> list[Edge]:
-        """Rebuild the shortest path, preferring priority zones.
+        """Rebuild a shortest path, preferring priority zones.
 
-        Only edges lying on the shortest path are followed. Nodes are
-        visited in finalization order, which is a valid order for
-        those edges.
+        Only edges lying on a shortest path are followed, and only
+        toward a node finalized later by the BFS. 0-weight edges (a
+        hub's in->out edge and its reverse) could otherwise form a
+        loop in->out->in that keeps raising the priority score, which
+        would make the predecessors point at each other forever.
+        Following finalization order makes the explored edges acyclic.
 
         Args:
             dist: Distances computed by the BFS.
@@ -226,6 +231,7 @@ class BfsNetwork:
         Returns:
             The chosen path as a list of edges.
         """
+        rank = {node: index for index, node in enumerate(order)}
         score: dict[NodeId, int] = {self.source: 0}
         prev_edge: dict[NodeId, Edge] = {}
         prev_node: dict[NodeId, NodeId] = {}
@@ -237,6 +243,8 @@ class BfsNetwork:
                 if edge.residual_capacity() <= 0:
                     continue
                 if dist.get(edge.target) != dist[node] + edge.weight:
+                    continue
+                if rank.get(edge.target, -1) <= rank[node]:
                     continue
                 candidate = score[node] + (
                     1 if edge.target in self._priority_nodes else 0
@@ -255,8 +263,7 @@ class BfsNetwork:
         path.reverse()
         return path
 
-    @staticmethod
-    def augment(path: list[Edge]) -> None:
+    def augment(self, path: list[Edge]) -> None:
         """Push one unit of flow along a path.
 
         Args:
@@ -345,7 +352,7 @@ class BfsNetwork:
         result: list[str] = []
         for name in names:
             if name in result:
-                del result[result.index(name) + 1:]
+                del result[result.index(name) + 1 :]
             else:
                 result.append(name)
         return result
