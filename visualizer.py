@@ -146,7 +146,7 @@ class Visualizer:
         """Map every hub to a point of the window and size the hubs.
 
         Map coordinates are scaled to fill the area above the HUD, with
-        the y axis pointing up as in usual map coordinates.
+        the y-axis pointing up as in usual map coordinates.
         """
         width, height = size[0], size[1] - HUD_HEIGHT
         xs = [hub.x for hub in self._hubs]
@@ -266,7 +266,7 @@ class Visualizer:
         """Draw each drone between its two positions.
 
         Drones drawn at exactly the same point (a crowded hub) are
-        merged into a single disc labelled with their count.
+        merged into a single disc labeled with their count.
         """
         points_start = self._drone_points(start)
         points_end = self._drone_points(end)
@@ -330,14 +330,14 @@ class Visualizer:
         hub, target = position
         ax, ay = self._positions[hub.name]
         if target is None:
-            return (ax, ay)
+            return ax, ay
         bx, by = self._positions[target.name]
-        return ((ax + bx) / 2, (ay + by) / 2)
+        return (ax + bx) / 2, (ay + by) / 2
 
     def _hovered_hub(self) -> Hub | None:
         """Return the hub under the mouse pointer, if any.
 
-        When hubs overlap, the one whose center is closest wins.
+        When hubs overlap, the one whose center is the closest wins.
         """
         if self._mouse is None:
             return None

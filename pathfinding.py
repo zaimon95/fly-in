@@ -119,7 +119,7 @@ class BfsNetwork:
         for hub in self._graph.hubs():
             if hub.zone is Zone.BLOCKED:
                 continue
-            for neighbour, connection in self._graph.neighbours(hub):
+            for neighbour, connection in self._graph.neighbors(hub):
                 if neighbour.zone is Zone.BLOCKED:
                     continue
                 pair = connection.endpoints()
@@ -157,12 +157,12 @@ class BfsNetwork:
     @property
     def source(self) -> NodeId:
         """Node where all flow starts: the start hub's "out" node."""
-        return ("out", self._graph.start.name)
+        return "out", self._graph.start.name
 
     @property
     def sink(self) -> NodeId:
         """Node where all flow ends: the end hub's "in" node."""
-        return ("in", self._graph.end.name)
+        return "in", self._graph.end.name
 
     def shortest_path(self) -> list[Edge] | None:
         """Find the shortest augmenting path in the residual network.
@@ -215,9 +215,9 @@ class BfsNetwork:
     def _best_priority_path(
         self, dist: dict[NodeId, int], order: list[NodeId]
     ) -> list[Edge]:
-        """Rebuild a shortest path, preferring priority zones.
+        """Rebuild the shortest path, preferring priority zones.
 
-        Only edges lying on a shortest path are followed, and only
+        Only edges lying on the shortest path are followed, and only
         toward a node finalized later by the BFS. 0-weight edges (a
         hub's in->out edge and its reverse) could otherwise form a
         loop in->out->in that keeps raising the priority score, which
@@ -263,7 +263,8 @@ class BfsNetwork:
         path.reverse()
         return path
 
-    def augment(self, path: list[Edge]) -> None:
+    @staticmethod
+    def augment(path: list[Edge]) -> None:
         """Push one unit of flow along a path.
 
         Args:
@@ -352,7 +353,7 @@ class BfsNetwork:
         result: list[str] = []
         for name in names:
             if name in result:
-                del result[result.index(name) + 1 :]
+                del result[result.index(name) + 1:]
             else:
                 result.append(name)
         return result

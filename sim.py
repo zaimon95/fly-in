@@ -73,8 +73,8 @@ class Drone:
     def where(self) -> Position:
         """Return the drone's position, for the visual replay."""
         if self.in_transit:
-            return (self.current_hub(), self.next_hub())
-        return (self.current_hub(), None)
+            return self.current_hub(), self.next_hub()
+        return self.current_hub(), None
 
 
 class Simulator:
@@ -164,7 +164,8 @@ class Simulator:
                 moves.append((drone.drone_id, text))
         return moves
 
-    def _land(self, drone: Drone) -> None:
+    @staticmethod
+    def _land(drone: Drone) -> None:
         """End a drone's transit in its restricted zone.
 
         The place was reserved when the transit started, so no
